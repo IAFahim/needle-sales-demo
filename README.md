@@ -10,7 +10,11 @@ The call flow of the Needle sales agent as StateSmith state machines. Each scena
 
 ## Open a simulator
 
-GitHub shows a `.sim.html` file as text. Download it (the download button on the file's page) and open it in a browser. Click an event on the right to send it; the diagram shows the current state.
+The simulators are on this repo's GitHub Pages site: Settings, Pages, Visit site. The site lists every scenario; click one, then click its events.
+
+The site is built from the `gh-pages` branch, which holds only the `.sim.html` files and a list page. Anyone with its link can open it, even though the repo is private. After you change a scenario, copy its new `.sim.html` to the same path on `gh-pages` and push.
+
+Or open one locally: download the `.sim.html` and open it in a browser.
 
 ## Make the code again
 
