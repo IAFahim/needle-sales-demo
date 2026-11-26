@@ -2,6 +2,11 @@
 
 [*] --> Preamble
 
+state Complete
+state CouldNotFinish
+state StopRequested
+state HungUp
+
 state Preamble {
     [*] --> CountSegments
 
@@ -30,16 +35,11 @@ Preamble : enter / segmentIndex = 0; bargeInCount = 0; maxBargeIns = 2;
 Preamble --> StopRequested : STOP
 Preamble --> HungUp : HANGUP
 
-state Complete
 Complete : enter / preambleComplete = true;
 
-state StopRequested
 StopRequested : enter / stopRequested = true;
 
-state CouldNotFinish
 CouldNotFinish : enter / preambleComplete = false;
-
-state HungUp
 
 /'! $CONFIG : toml
 [RenderConfig]
