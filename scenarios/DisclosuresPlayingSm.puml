@@ -1,0 +1,66 @@
+@startuml DisclosuresPlayingSm
+
+[*] --> Preamble
+
+state Preamble {
+    [*] --> CountSegments
+
+    state CountSegments <<choice>>
+    CountSegments --> PlayingSegment : [admtRequired] / segmentCount = 7;
+    CountSegments --> PlayingSegment : else / segmentCount = 6;
+
+    state PlayingSegment
+    PlayingSegment : enter / playing = true;
+    PlayingSegment : exit / playing = false;
+    PlayingSegment --> NextSegment : SEGMENT_DONE / segmentIndex += 1;
+    PlayingSegment --> CallerTalking : BARGE_IN / bargeInCount += 1;
+
+    state NextSegment <<choice>>
+    NextSegment --> PlayingSegment : [segmentIndex < segmentCount]
+    NextSegment --> Complete : else
+
+    state CallerTalking
+    CallerTalking --> AfterBargeIn : CALLER_DONE
+
+    state AfterBargeIn <<choice>>
+    AfterBargeIn --> PlayingSegment : [bargeInCount <= maxBargeIns]
+    AfterBargeIn --> CouldNotFinish : else
+}
+Preamble : enter / segmentIndex = 0; bargeInCount = 0; maxBargeIns = 2;
+Preamble --> StopRequested : STOP
+Preamble --> HungUp : HANGUP
+
+state Complete
+Complete : enter / preambleComplete = true;
+
+state StopRequested
+StopRequested : enter / stopRequested = true;
+
+state CouldNotFinish
+CouldNotFinish : enter / preambleComplete = false;
+
+state HungUp
+
+/'! $CONFIG : toml
+[RenderConfig]
+AutoExpandedVars = """
+    public bool admtRequired;
+    public int segmentCount;
+    public int segmentIndex;
+    public int bargeInCount;
+    public int maxBargeIns;
+    public bool playing;
+    public bool preambleComplete;
+    public bool stopRequested;
+    """
+[RenderConfig.CSharp]
+NameSpace = "Machines"
+[SmRunnerSettings]
+transpilerId = "CSharp"
+[SmRunnerSettings.smDesignDescriber]
+enabled = true
+[SmRunnerSettings.smDesignDescriber.outputSections]
+beforeTransformations = false
+afterTransformations = true
+'/
+@enduml
